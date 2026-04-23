@@ -58,8 +58,9 @@ public class AuthService {
                 .build();
     }
 
-    @Transactional
     public AuthResponse authenticate(AuthRequest request) {
+        System.out.println(">>> AUTHENTICATE: " + request.getEmail());
+
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -68,8 +69,11 @@ public class AuthService {
                 )
         );
 
+
+
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
 
         String accessToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);

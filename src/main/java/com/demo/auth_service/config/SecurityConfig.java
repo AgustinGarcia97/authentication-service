@@ -40,7 +40,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(SecurityRoutes.PUBLIC_ROUTES).permitAll()
-                        .requestMatchers(SecurityRoutes.PRIVATE_ROUTES)
+                        .requestMatchers(SecurityRoutes.ADMIN_ROUTES)
                         .hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
