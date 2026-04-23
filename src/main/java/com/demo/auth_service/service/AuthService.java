@@ -6,6 +6,7 @@ import com.demo.auth_service.dto.RegisterRequest;
 import com.demo.auth_service.model.Role;
 import com.demo.auth_service.model.User;
 import com.demo.auth_service.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +21,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+
     public AuthService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
                        JwtService jwtService,
@@ -30,6 +32,7 @@ public class AuthService {
         this.authenticationManager = authenticationManager;
     }
 
+    @Transactional
     public AuthResponse register(RegisterRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -55,6 +58,7 @@ public class AuthService {
                 .build();
     }
 
+    @Transactional
     public AuthResponse authenticate(AuthRequest request) {
 
         authenticationManager.authenticate(
