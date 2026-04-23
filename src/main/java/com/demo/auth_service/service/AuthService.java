@@ -76,4 +76,27 @@ public class AuthService {
                 .build();
     }
 
+    public AuthResponse refreshToken(String refreshToken) {
+
+        final String email = jwtService.extractUsername(refreshToken);
+
+        if (email == null) {
+            throw new RuntimeException("Invalid refresh token");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!jwtService.isTokenValid(refreshToken, user)) {
+            throw new RuntimeException("Invalid refresh token");
+        }
+
+        String newAccessToken = jwtService.generateToken(user);
+
+        return AuthResponse.builder()
+                .accessToken(newAccessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
 }
