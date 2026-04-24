@@ -33,6 +33,7 @@ public class SecurityConfig {
         this.accessDeniedHandler = accessDeniedHandler;
     }
 
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http

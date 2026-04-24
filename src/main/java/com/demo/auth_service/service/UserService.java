@@ -23,10 +23,9 @@ public class UserService {
     }
 
     public UserResponse getCurrentUser() {
-        User user = (User) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+
+        User user = (User) auth.getPrincipal();
 
         return userMapper.toResponse(user);
     }

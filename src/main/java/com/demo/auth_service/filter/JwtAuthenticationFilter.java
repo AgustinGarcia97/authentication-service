@@ -44,6 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             final String jwt = authHeader.substring(7);
             final String userEmail = jwtService.extractUsername(jwt);
 
+
             if (userEmail != null &&
                     SecurityContextHolder.getContext().getAuthentication() == null) {
 
@@ -51,6 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         userDetailsService.loadUserByUsername(userEmail);
 
                 if (jwtService.isTokenValid(jwt, userDetails)) {
+
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(
                                     userDetails,
@@ -63,11 +65,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     );
                     SecurityContextHolder.getContext()
                             .setAuthentication(authToken);
+
                 }
+
             }
         } catch (Exception e) {
             SecurityContextHolder.clearContext();
         }
+        System.out.println(">>> BEFORE CHAIN: " +
+                SecurityContextHolder.getContext().getAuthentication());
 
         filterChain.doFilter(request, response);
     }
