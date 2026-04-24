@@ -1,6 +1,7 @@
 package com.demo.auth_service.service;
 
 import com.demo.auth_service.dto.UserResponse;
+import com.demo.auth_service.exception.UserNotFoundException;
 import com.demo.auth_service.mapper.UserMapper;
 import com.demo.auth_service.model.User;
 import com.demo.auth_service.repository.UserRepository;
@@ -32,7 +33,7 @@ public class UserService {
 
     public UserResponse getUserById(UUID id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(id));
         return userMapper.toResponse(user);
     }
 

@@ -3,6 +3,8 @@ package com.demo.auth_service.service;
 import com.demo.auth_service.dto.AuthRequest;
 import com.demo.auth_service.dto.AuthResponse;
 import com.demo.auth_service.dto.RegisterRequest;
+import com.demo.auth_service.exception.EmailAlreadyExistsException;
+import com.demo.auth_service.exception.UserNotFoundException;
 import com.demo.auth_service.model.Role;
 import com.demo.auth_service.model.User;
 import com.demo.auth_service.repository.UserRepository;
@@ -36,7 +38,7 @@ public class AuthService {
     public AuthResponse register(RegisterRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already registered");
+            throw new EmailAlreadyExistsException("Email already registered");
         }
 
         User user = User.builder()
@@ -59,8 +61,6 @@ public class AuthService {
     }
 
     public AuthResponse authenticate(AuthRequest request) {
-        System.out.println(">>> AUTHENTICATE: " + request.getEmail());
-
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -70,9 +70,8 @@ public class AuthService {
         );
 
 
-
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(request.getEmail()));
 
 
         String accessToken = jwtService.generateToken(user);
